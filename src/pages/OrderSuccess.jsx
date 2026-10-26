@@ -325,7 +325,7 @@ const OrderSuccess = () => {
         </div>
 
         {/* ================== PRIMARY ACTION BUTTONS ================== */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-3">
+        {/* <div className="mt-8 flex flex-col sm:flex-row gap-3">
           <button
             type="button"
             onClick={handleTrackOrder}
@@ -339,10 +339,10 @@ const OrderSuccess = () => {
           >
             Continue Shopping
           </Link>
-        </div>
+        </div> */}
 
         {/* Footer Support Contact Nodes */}
-        <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-400">
+        {/* <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-400">
           <p>Need Help? Our customer service team is 24/7 available.</p>
           <div className="flex items-center gap-2">
             <a 
@@ -360,7 +360,7 @@ const OrderSuccess = () => {
               <PhoneCall className="w-3.5 h-3.5" /> +880 01714457750
             </a>
           </div>
-        </div>
+        </div> */}
 
       </div>
     </div>

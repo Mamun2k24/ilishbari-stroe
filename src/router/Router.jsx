@@ -219,6 +219,8 @@ const loadable = (Component) => (
 export const router = createBrowserRouter(
   [
     { path: "/admin-login", element: loadable(AdminLoginPage) },
+    // Order success page outside MainLayout (no header/footer)
+    { path: "/order-success", element: loadable(OrderSuccess) },
     {
       path: "/",
       element: (
@@ -246,7 +248,7 @@ export const router = createBrowserRouter(
         },
         { path: "/about", element: loadable(KroykoriAboutPage) },
         // { path: "/contact", element: loadable(KroykoriContactPage) },
-        { path: "/order-success", element: loadable(OrderSuccess) },
+
         {
           path: "/categories",
           element: loadable(AllCategories),
