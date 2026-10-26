@@ -119,7 +119,7 @@ const LandingPageView = () => {
    const reviews = page.testimonials || [];
    return (
     <main style={{ "--lp-primary": theme.primary, "--lp-accent": theme.accent, "--lp-bg": theme.background, "--lp-button": theme.button, "--lp-text": theme.text, background: "var(--lp-bg)", color: "var(--lp-text)" }} className="min-h-screen font-sans">
-      <section className="relative overflow-hidden text-white" style={{ background: "linear-gradient(100deg, rgba(8,35,22,.94), rgba(8,35,22,.75)), var(--lp-primary)" }}>
+      <section className="relative overflow-hidden text-white" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,35,23,.93) 0%, rgba(5,35,23,.72) 38%, rgba(5,35,23,.26) 72%, rgba(5,35,23,.10) 100%), url("${page.hero?.backgroundImage || "https://i.ibb.co.com/KpzYJ1VQ/cover.jpg"}")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundColor: "var(--lp-primary)" }}>
         <div className="max-w-6xl mx-auto px-5 py-14 md:py-24 grid md:grid-cols-2 gap-10 items-center">
           <div className="space-y-5">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold" style={{ background: "var(--lp-accent)", color: "#18251a" }}>{page.hero?.badge || "প্রিমিয়াম কোয়ালিটি"}</span>
