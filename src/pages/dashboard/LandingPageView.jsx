@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import LandingProductGallery from "./LandingProductGallery";
 import LandingProductCard from "./LandingProductCard";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import LandingSpecialOffer from "./LandingSpecialOffer";
@@ -19,11 +19,11 @@ import {
 } from "react-icons/fi";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
-const LandingPageView = ({ homepageSlug }) => {
+const LandingPageView = () => {
   
-  const { slug: routeSlug } = useParams();
-
-  const slug = routeSlug || homepageSlug;
+  const { slug } = useParams();
+  const location = useLocation();
+  const isHomepageRoute = location.pathname === "/";
 
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
@@ -46,12 +46,14 @@ const LandingPageView = ({ homepageSlug }) => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["landing-page", slug],
-    enabled: Boolean(slug),
+    queryKey: ["landing-page", isHomepageRoute ? "homepage" : slug],
+    enabled: isHomepageRoute || Boolean(slug),
     retry: false,
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/api/landing-pages/public/${encodeURIComponent(slug)}`
+        isHomepageRoute
+          ? "/api/landing-pages/public/homepage"
+          : `/api/landing-pages/public/${encodeURIComponent(slug)}`
       );
       return res.data.data || res.data;
     },
