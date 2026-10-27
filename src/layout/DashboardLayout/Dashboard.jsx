@@ -201,11 +201,11 @@ export default function Dashboard() {
       {
         title: "Marketing",
         items: [
-          {
-            to: "/dashboard/coupon",
-            icon: <FiPercent />,
-            label: "Coupons",
-          },
+          // {
+          //   to: "/dashboard/coupon",
+          //   icon: <FiPercent />,
+          //   label: "Coupons",
+          // },
           // {
           //   to: "/dashboard/flash-sale",
           //   icon: <FiTag />,

@@ -55,6 +55,51 @@ export default function LandingDesignEditor({ value, onChange }) {
   const [uploadingBenefit, setUploadingBenefit] = useState(null);
   const [uploadingGallery, setUploadingGallery] = useState(null);
   const [uploadingReview, setUploadingReview] = useState(null);
+  const [uploadingComboBanner, setUploadingComboBanner] = useState(false);
+
+  const uploadComboBanner = async (file) => {
+    if (!file) return;
+    if (!["image/png", "image/jpeg", "image/webp", "image/gif"].includes(file.type)) {
+      alert("PNG, JPG, WebP অথবা GIF ছবি নির্বাচন করুন।");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Banner image সর্বোচ্চ 5 MB হতে পারবে।");
+      return;
+    }
+    const apiKey = import.meta.env.VITE_IMGBB_API_KEY;
+    if (!apiKey) {
+      alert("VITE_IMGBB_API_KEY সেট করা নেই।");
+      return;
+    }
+    setUploadingComboBanner(true);
+    try {
+      const body = new FormData();
+      body.append("image", file);
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?key=${encodeURIComponent(apiKey)}`,
+        { method: "POST", body }
+      );
+      const result = await response.json();
+      if (!response.ok || !result?.data?.url) {
+        throw new Error(result?.error?.message || "Upload failed");
+      }
+      onChange((prev) => ({
+        ...prev,
+        content: {
+          ...(prev.content || {}),
+          comboBanner: {
+            ...(prev.content?.comboBanner || {}),
+            image: result.data.url,
+          },
+        },
+      }));
+    } catch (error) {
+      alert(`Combo banner upload failed: ${error.message}`);
+    } finally {
+      setUploadingComboBanner(false);
+    }
+  };
 
   // Upload a customer's profile photo using the existing ImgBB configuration.
   const uploadReviewImage = async (file, index) => {
@@ -476,12 +521,59 @@ typeof item.icon === "string" &&
 
     <div className={section}><h3 className={titleClass}>📝 Section Titles & Text</h3>
 
-      {Object.entries(content).filter(([key]) => key !== "sectionVisibility").map(([key, val]) => <label key={key} className="block text-sm font-semibold">{key}
+      {Object.entries(content).filter(([key]) => key !== "sectionVisibility" && key !== "comboBanner").map(([key, val]) => <label key={key} className="block text-sm font-semibold">{key}
 
         {Array.isArray(val) ? <textarea className={field} rows={4} value={toLines(val)} onChange={e => updateContent(key, fromLines(e.target.value))} placeholder="One item per line" /> : <input className={field} value={val} onChange={e => updateContent(key, e.target.value)} />}
 
       </label>)}
 
+    </div>
+
+    <div className={section}>
+      <h3 className={titleClass}>🎁 Hero-এর নিচে Combo Offer Banner</h3>
+      <p className="text-sm text-slate-500">ছবি Upload করে Save Changes চাপুন। Banner-এ ক্লিক করলে Checkout-এ যাবে।</p>
+      <label className="flex items-center gap-3 text-sm font-semibold">
+        <input type="checkbox" checked={content.comboBanner?.enabled === true}
+          onChange={e => updateContent("comboBanner", { ...(content.comboBanner || {}), enabled: e.target.checked })}
+          className="h-5 w-5 accent-emerald-600" /> Banner ON / OFF
+      </label>
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+        <label className={`inline-flex w-fit items-center rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white ${uploadingComboBanner ? "cursor-wait opacity-60" : "cursor-pointer hover:bg-emerald-800"}`}>
+          {uploadingComboBanner ? "Uploading Banner..." : "📤 Upload Banner from Computer"}
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            className="hidden"
+            disabled={uploadingComboBanner}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              uploadComboBanner(file);
+            }}
+          />
+        </label>
+        {content.comboBanner?.image && (
+          <button
+            type="button"
+            className="text-sm font-semibold text-rose-600 hover:underline"
+            onClick={() => updateContent("comboBanner", { ...(content.comboBanner || {}), image: "" })}
+          >
+            Remove Banner Image
+          </button>
+        )}
+        <p className="w-full text-xs text-slate-500">PNG/JPG/WebP/GIF • Max 5 MB • Upload শেষে Save Changes চাপুন</p>
+      </div>
+      <label className="block text-sm font-semibold">Banner Image URL
+        <input className={field} value={content.comboBanner?.image || ""}
+          onChange={e => updateContent("comboBanner", { ...(content.comboBanner || {}), image: e.target.value })}
+          placeholder="https://.../combo-offer-banner.png" />
+      </label>
+      <label className="block text-sm font-semibold">Image description (Accessibility)
+        <input className={field} value={content.comboBanner?.alt || ""}
+          onChange={e => updateContent("comboBanner", { ...(content.comboBanner || {}), alt: e.target.value })}
+          placeholder="৩ জারের কম্বো অফার ৯৯৯ টাকা" />
+      </label>
+      {content.comboBanner?.image && <img src={content.comboBanner.image} alt="Banner preview" className="w-full max-w-2xl rounded-xl" />}
     </div>
 
     {arrayEditor("gallery", "🖼️ Gallery Images", [{ name: "image", label: "Image URL" }, { name: "title", label: "Caption" }], { image: "", title: "" })}

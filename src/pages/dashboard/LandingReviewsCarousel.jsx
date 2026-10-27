@@ -60,7 +60,7 @@ export default function LandingReviewsCarousel({ reviews = [], title = "আম�
   if (!total) return null;
 
   return (
-    <section className="relative overflow-hidden px-3 py-7 sm:px-6 sm:py-10 lg:py-14" aria-label={title}>
+    <section className="relative overflow-hidden px-3 py-5 sm:px-6 sm:py-10 lg:py-14" aria-label={title}>
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-5 text-center sm:mb-7 lg:mb-9">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/70 bg-white/65 px-3 py-1 text-[9px] font-extrabold uppercase tracking-[.16em] text-emerald-900 sm:px-4 sm:py-1.5 sm:text-[10px]">
@@ -118,7 +118,7 @@ export default function LandingReviewsCarousel({ reviews = [], title = "আম�
           </div>
 
           {maxStart > 0 && (
-            <div className="mt-2 flex items-center justify-center gap-3 sm:mt-3 sm:gap-4">
+            <div className="mt-0 flex items-center justify-center gap-3 md:mt-3 sm:gap-4">
               <button type="button" onClick={() => goTo(active <= 0 ? maxStart : active - 1)} className="flex h-9 w-9 items-center justify-center rounded-full border border-emerald-200 bg-white text-lg text-emerald-900 shadow-sm transition hover:bg-emerald-800 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:h-10 sm:w-10 sm:text-xl" aria-label="আগের রিভিউ">‹</button>
               <div className="flex max-w-[170px] items-center gap-1.5 overflow-x-auto py-2 sm:max-w-none sm:gap-2" style={{ scrollbarWidth: "none" }} aria-label="রিভিউ পৃষ্ঠা">
                 {Array.from({ length: maxStart + 1 }, (_, index) => (

@@ -109,7 +109,7 @@ export default function IlishBariFooter({
           </div>
 
           {/* Column 2: Quick Links */}
-          <div>
+          <div className="hidden md:block">
             <h3 className="text-base font-semibold text-white border-b border-emerald-400/30 pb-2 inline-block">
               গুরুত্বপূর্ণ লিঙ্ক
             </h3>
