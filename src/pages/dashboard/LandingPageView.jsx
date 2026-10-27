@@ -18,6 +18,7 @@ import {
   FiZap,
 } from "react-icons/fi";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import IlishBariFooter from "./IlishBariFooter";
 
 const LandingPageView = () => {
   
@@ -514,7 +515,11 @@ const price = Number(product?.price ?? 0);
           </div>
         </section>}
       </div>
-      <footer className="px-5 py-10 text-center text-white" style={{background:"var(--lp-primary)"}}>{content.footerText || page.title}</footer>
+      {/* <footer className="px-5 py-10 text-center text-white" style={{background:"var(--lp-primary)"}}>{content.footerText || page.title}</footer>
+     */}
+    
+    <IlishBariFooter />
+    
     </main>
   );
 };
