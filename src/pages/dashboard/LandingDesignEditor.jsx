@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-
-
 const SECTION_OPTIONS = [
 
   { key: "hero", label: "Hero Banner" },
@@ -23,8 +21,6 @@ const SECTION_OPTIONS = [
   { key: "checkout", label: "Checkout Form" },
 
 ];
-
-
 
 const defaultTheme = { primary: "#153f2d", accent: "#f59e0b", background: "#e4f3e9", button: "#169447", text: "#142c21" };
 
@@ -54,11 +50,92 @@ const toLines = value => (value || []).join("\n");
 
 const fromLines = value => value.split("\n"); // Preserve spaces while typing
 
-
-
 export default function LandingDesignEditor({ value, onChange }) {
 
   const [uploadingBenefit, setUploadingBenefit] = useState(null);
+  const [uploadingGallery, setUploadingGallery] = useState(null);
+  const [uploadingReview, setUploadingReview] = useState(null);
+
+  // Upload a customer's profile photo using the existing ImgBB configuration.
+  const uploadReviewImage = async (file, index) => {
+    if (!file) return;
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      alert("JPG, PNG অথবা WebP ছবি নির্বাচন করুন।");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Profile photo সর্বোচ্চ 5 MB হতে পারবে।");
+      return;
+    }
+    const apiKey = import.meta.env.VITE_IMGBB_API_KEY;
+    if (!apiKey) {
+      alert("VITE_IMGBB_API_KEY সেট করা নেই।");
+      return;
+    }
+    setUploadingReview(index);
+    try {
+      const body = new FormData();
+      body.append("image", file);
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?key=${encodeURIComponent(apiKey)}`,
+        { method: "POST", body }
+      );
+      const result = await response.json();
+      if (!response.ok || !result?.data?.url) {
+        throw new Error(result?.error?.message || "Upload failed");
+      }
+      onChange((prev) => ({
+        ...prev,
+        testimonials: (prev.testimonials || []).map((item, i) =>
+          i === index ? { ...item, image: result.data.url } : item
+        ),
+      }));
+    } catch (error) {
+      alert(`Profile photo upload failed: ${error.message}`);
+    } finally {
+      setUploadingReview(null);
+    }
+  };
+
+  const uploadGalleryImage = async (file, index) => {
+    if (!file) return;
+    if (!["image/png", "image/jpeg", "image/webp", "image/gif"].includes(file.type)) {
+      alert("PNG, JPG, WebP অথবা GIF ছবি নির্বাচন করুন।");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("ছবি সর্বোচ্চ 5 MB হতে পারবে।");
+      return;
+    }
+    const apiKey = import.meta.env.VITE_IMGBB_API_KEY;
+    if (!apiKey) {
+      alert("VITE_IMGBB_API_KEY সেট করা নেই।");
+      return;
+    }
+    setUploadingGallery(index);
+    try {
+      const body = new FormData();
+      body.append("image", file);
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?key=${encodeURIComponent(apiKey)}`,
+        { method: "POST", body }
+      );
+      const result = await response.json();
+      if (!response.ok || !result?.data?.url) {
+        throw new Error(result?.error?.message || "Upload failed");
+      }
+      onChange((prev) => ({
+        ...prev,
+        gallery: (prev.gallery || []).map((item, i) =>
+          i === index ? { ...item, image: result.data.url } : item
+        ),
+      }));
+    } catch (error) {
+      alert(`Gallery image upload failed: ${error.message}`);
+    } finally {
+      setUploadingGallery(null);
+    }
+  };
 
   const uploadBenefitIcon = async (file, index) => {
 
@@ -92,7 +169,7 @@ export default function LandingDesignEditor({ value, onChange }) {
 
       data.append('image', file);
 
-      const response = await fetch(`https\://api.imgbb.com/1/upload?key=${encodeURIComponent(key)}`, {
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(key)}`, {
 
         method: 'POST', body: data,
 
@@ -132,11 +209,11 @@ export default function LandingDesignEditor({ value, onChange }) {
 
   const updateArray = (key, index, prop, val) => {
 
-    const next = [...(value[key] || [])];
-
-    next[index] = { ...next[index], [prop]: val };
-
-    update(key, next);
+    onChange(prev => {
+      const next = [...(prev[key] || [])];
+      next[index] = { ...next[index], [prop]: val };
+      return { ...prev, [key]: next };
+    });
 
   };
 
@@ -154,17 +231,98 @@ export default function LandingDesignEditor({ value, onChange }) {
 
           <input className={field} type={type || "text"} value={item[name] ?? ""} onChange={e => updateArray(key, index, name, type === "number" ? Number(e.target.value) : e.target.value)} /></label>)}
 
+        {key === "testimonials" && (
+          <div className="flex flex-wrap items-center gap-4 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+            {item.image ? (
+              <img
+                src={item.image}
+                alt={`${item.name || "Customer"} profile preview`}
+                className="h-16 w-16 shrink-0 rounded-full border-2 border-white object-cover shadow-sm"
+              />
+            ) : (
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xl font-bold text-emerald-900">
+                {(item.name || "C").trim().charAt(0).toUpperCase() || "C"}
+              </div>
+            )}
+            <div className="flex flex-col gap-2">
+              <label className="inline-flex w-fit cursor-pointer items-center rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white">
+                {uploadingReview === index ? "Uploading..." : "Upload Profile Photo"}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  disabled={uploadingReview !== null}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    uploadReviewImage(file, index);
+                  }}
+                />
+              </label>
+              {item.image && (
+                <button
+                  type="button"
+                  className="w-fit text-left text-xs font-semibold text-rose-600"
+                  onClick={() => updateArray("testimonials", index, "image", "")}
+                >
+                  Remove Profile Photo
+                </button>
+              )}
+              <span className="text-xs text-slate-500">JPG/PNG/WebP • Max 5 MB • Upload শেষে Save Changes চাপুন</span>
+            </div>
+          </div>
+        )}
+
+        {key === "gallery" && (
+          <div className="flex flex-wrap items-center gap-4 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+            {item.image && (
+              <img
+                src={item.image}
+                alt={item.title || "Gallery preview"}
+                className="h-20 w-20 rounded-lg border border-slate-200 bg-white object-cover"
+              />
+            )}
+            <div className="flex flex-col gap-2">
+              <label className="inline-flex w-fit cursor-pointer items-center rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white">
+                {uploadingGallery === index ? "Uploading..." : "Upload Image from Computer"}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  className="hidden"
+                  disabled={uploadingGallery !== null}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    uploadGalleryImage(file, index);
+                  }}
+                />
+              </label>
+              <span className="text-xs text-slate-500">PNG/JPG/WebP/GIF • সর্বোচ্চ 5 MB • আপলোডের পর Save Changes চাপুন</span>
+            </div>
+          </div>
+        )}
+
         {key === "benefits" && (
 
           <div className="flex flex-wrap items-center gap-4 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
 
             <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white text-3xl text-emerald-900 shadow-sm">
 
-              {item.icon && /^(https?:\/\/|data:image\/)/i.test(item.icon.trim())
-
-                ? <img src={item.icon.trim()} alt="Icon preview" className="h-10 w-10 object-contain" />
-
-                : <span>{item.icon || "✦"}</span>}
+          {item.icon &&
+typeof item.icon === "string" &&
+(
+  item.icon.trim().startsWith("https://") ||
+  item.icon.trim().startsWith("http://") ||
+  item.icon.trim().startsWith("data:image/")
+) ? (
+  <img
+    src={item.icon.trim()}
+    alt="Icon preview"
+    className="h-10 w-10 object-contain"
+  />
+) : (
+  <span>{item.icon || "✦"}</span>
+)}
 
             </div>
 
@@ -232,7 +390,19 @@ export default function LandingDesignEditor({ value, onChange }) {
 
             <input type="checkbox" className="h-5 w-5 accent-emerald-600" checked={enabled}
 
-              onChange={e => updateContent("sectionVisibility", { ...(content.sectionVisibility || {}), [key]: e.target.checked })} />
+              onChange={(e) => {
+                  const checked = e.target.checked;
+                  onChange((prev) => ({
+                    ...prev,
+                    content: {
+                      ...(prev.content || {}),
+                      sectionVisibility: {
+                        ...(prev.content?.sectionVisibility || {}),
+                        [key]: checked,
+                      },
+                    },
+                  }));
+                }} />
 
           </label>;
 
@@ -320,7 +490,7 @@ export default function LandingDesignEditor({ value, onChange }) {
 
     {arrayEditor("features", "✨ Why Choose Us", [{ name: "title", label: "Title" }, { name: "description", label: "Description" }], { title: "", description: "" })}
 
-    {arrayEditor("testimonials", "⭐ Customer Testimonials", [{ name: "name", label: "Customer Name" }, { name: "comment", label: "Review" }, { name: "rating", label: "Rating (1-5)", type: "number" }], { name: "", comment: "", rating: 5 })}
+    {arrayEditor("testimonials", "⭐ Customer Testimonials", [{ name: "name", label: "Customer Name" }, { name: "comment", label: "Review" }, { name: "rating", label: "Rating (1-5)", type: "number" }], { name: "", image: "", comment: "", rating: 5 })}
 
     {arrayEditor("faq", "❓ FAQ", [{ name: "question", label: "Question" }, { name: "answer", label: "Answer" }], { question: "", answer: "" })}
 

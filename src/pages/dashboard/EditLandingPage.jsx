@@ -1,5 +1,6 @@
 import LandingDesignEditor, { landingThemeDefaults, landingContentDefaults } from "./LandingDesignEditor";
 import React, { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   FiArrowLeft,
@@ -20,12 +21,15 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 const EditLandingPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const savedStatusRef = useRef("draft");
   const axiosSecure = useAxiosSecure();
   const axiosRef = useRef(axiosSecure);
   axiosRef.current = axiosSecure;
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
   const [activeTab, setActiveTab] = useState("content"); // 'content' | 'design'
 
@@ -67,12 +71,20 @@ const EditLandingPage = () => {
         const data = res.data.data || res.data;
 
         if (cancelled) return;
+        savedStatusRef.current = data.status || "draft";
         setForm({
           title: data.title || "",
           slug: data.slug || "",
           status: data.status || "draft",
           theme: { ...landingThemeDefaults, ...data.theme },
-          content: { ...landingContentDefaults, ...data.content },
+          content: {
+            ...landingContentDefaults,
+            ...data.content,
+            sectionVisibility: {
+              ...landingContentDefaults.sectionVisibility,
+              ...data.content?.sectionVisibility,
+            },
+          },
           gallery: data.gallery || [],
           benefits: data.benefits || [],
           features: data.features || [],
@@ -151,12 +163,45 @@ const EditLandingPage = () => {
     try {
       if (saving) return;
       setSaving(true);
-      await axiosSecure.put(`/api/landing-pages/${id}`, form);
-      alert("Landing page updated successfully");
-      navigate("/dashboard/landing-pages");
+      if (form.status !== savedStatusRef.current) {
+        throw new Error("Page Status পরিবর্তনের জন্য আলাদা Publish/Unpublish API ব্যবহার করতে হবে। আগে Status আগের অবস্থায় রাখুন।");
+      }
+
+      // Status is managed by a separate backend endpoint.
+      const { status, ...payload } = form;
+      console.log("VISIBILITY SENT:", payload.content?.sectionVisibility);
+      await axiosRef.current.put(`/api/landing-pages/${id}`, payload);
+
+      // Read the persisted page back instead of assuming the update was stored.
+      const verifyRes = await axiosRef.current.get(`/api/landing-pages/${id}`);
+      const saved = verifyRes.data?.data || verifyRes.data;
+      const expectedVisibility = payload.content?.sectionVisibility || {};
+      const actualVisibility = saved.content?.sectionVisibility || {};
+      const mismatch = Object.keys(expectedVisibility).some(
+        (key) => Boolean(expectedVisibility[key]) !== Boolean(actualVisibility[key])
+      );
+      console.log("VISIBILITY SAVED:", actualVisibility);
+      if (mismatch) {
+        throw new Error("Section Visibility Database-এ ঠিকভাবে Save হয়নি। Backend Request ও Response পরীক্ষা করুন।");
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ["landing-page"] });
+      await queryClient.invalidateQueries({ queryKey: ["landing-pages"] });
+      setSaveMessage("সফলভাবে Save হয়েছে এবং Database থেকে Visibility যাচাই করা হয়েছে।");
+      setForm((prev) => ({
+        ...prev,
+        content: {
+          ...prev.content,
+          sectionVisibility: {
+            ...landingContentDefaults.sectionVisibility,
+            ...actualVisibility,
+          },
+        },
+      }));
     } catch (error) {
       console.log(error);
-      alert(error.response?.data?.message || "Update failed");
+      setSaveMessage("");
+      alert(error.response?.data?.message || error.message || "Update failed");
     } finally {
       setSaving(false);
     }
@@ -231,6 +276,12 @@ const EditLandingPage = () => {
           </button>
         </div>
       </div>
+
+      {saveMessage && (
+        <div role="status" className="max-w-7xl mx-auto mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+          {saveMessage}
+        </div>
+      )}
 
       {/* Main Grid Layout */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
