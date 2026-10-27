@@ -455,8 +455,17 @@ export default function ProductEdit({
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        throw new Error(data?.message || "Failed to update product");
-      }
+  const fieldErrors = data?.errors
+    ? Object.values(data.errors)
+        .map((item) => item?.message)
+        .filter(Boolean)
+        .join(", ")
+    : "";
+
+  throw new Error(
+    fieldErrors || data?.message || "Failed to update product"
+  );
+}
 
       toast.success(data?.message || "Product updated successfully!");
 

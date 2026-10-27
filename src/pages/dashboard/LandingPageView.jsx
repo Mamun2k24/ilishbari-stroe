@@ -96,7 +96,9 @@ const LandingPageView = () => {
   }
 
   const product = page.product;
-  const price = Number(page.offer?.offerPrice || product?.price || 0);
+
+// Dashboard Product Price will be the main price
+const price = Number(product?.price ?? 0);
   const insideDhaka = Number(shippingSettings?.insideDhakaRate ?? 60);
   const outsideDhaka = Number(shippingSettings?.outsideDhakaRate ?? 120);
   const productSubtotal = price * quantity;
