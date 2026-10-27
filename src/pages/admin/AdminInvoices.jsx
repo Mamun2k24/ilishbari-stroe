@@ -231,7 +231,7 @@ export default function AdminInvoices() {
           "Kroykori.shopping@gmail.com",
 
         // তোমার আসল domain এখানে বসাবে
-        website: "https://Kroykori.com",
+        website: "https://ilishbari.store",
 
         openingHours:
           "Sat–Thu, 9:00 AM – 10:00 PM",

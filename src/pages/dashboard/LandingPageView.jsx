@@ -204,9 +204,9 @@ const LandingPageView = () => {
 
   const price = Number(product?.price ?? 0);
 
-  const insideDhaka = Number(shippingSettings?.insideDhakaRate ?? 60);
+  const insideDhaka = Number(shippingSettings?.insideDhakaRate ?? 0);
 
-  const outsideDhaka = Number(shippingSettings?.outsideDhakaRate ?? 120);
+  const outsideDhaka = Number(shippingSettings?.outsideDhakaRate ?? 0);
 
   const productSubtotal = price * quantity;
 
