@@ -112,36 +112,39 @@ const LandingPageView = () => {
 
    const theme = { primary: "#153f2d", accent: "#f59e0b", background: "#e4f3e9", button: "#169447", text: "#142c21", ...(page.theme || {}) };
    const content = page.content || {};
+   const showSection = (key) => content.sectionVisibility?.[key] !== false;
 
    
-   const scrollCheckout = () => document.getElementById("checkout")?.scrollIntoView({ behavior: "smooth" });
+   const scrollCheckout = () => { if (showSection("checkout")) document.getElementById("checkout")?.scrollIntoView({ behavior: "smooth" }); };
    const heroImage = page.hero?.image || product?.productImage?.[0];
    const reviews = page.testimonials || [];
    return (
     <main style={{ "--lp-primary": theme.primary, "--lp-accent": theme.accent, "--lp-bg": theme.background, "--lp-button": theme.button, "--lp-text": theme.text, background: "var(--lp-bg)", color: "var(--lp-text)" }} className="min-h-screen font-sans">
-      <section className="relative overflow-hidden text-white" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,35,23,.93) 0%, rgba(5,35,23,.72) 38%, rgba(5,35,23,.26) 72%, rgba(5,35,23,.10) 100%), url("${page.hero?.backgroundImage || "https://i.ibb.co.com/KpzYJ1VQ/cover.jpg"}")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundColor: "var(--lp-primary)" }}>
+      {showSection("hero") && <section className="relative overflow-hidden text-white" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,35,23,.93) 0%, rgba(5,35,23,.72) 38%, rgba(5,35,23,.26) 72%, rgba(5,35,23,.10) 100%), url("${page.hero?.backgroundImage || "https://i.ibb.co.com/KpzYJ1VQ/cover.jpg"}")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundColor: "var(--lp-primary)" }}>
         <div className="max-w-6xl mx-auto px-5 py-14 md:py-24 grid md:grid-cols-2 gap-10 items-center">
           <div className="space-y-5">
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold" style={{ background: "var(--lp-accent)", color: "#18251a" }}>{page.hero?.badge || "প্রিমিয়াম কোয়ালিটি"}</span>
-            <h1 className="text-4xl md:text-6xl font-black leading-tight">{page.hero?.headline || page.title}</h1>
+            <h1 className="text-4xl md:text-6xl font-extrabold leading-[1.25] tracking-normal">
+  {page.hero?.headline || page.title}
+</h1>
             <p className="text-lg font-bold" style={{ color: "var(--lp-accent)" }}>{page.hero?.subHeadline}</p>
-            <div className="flex flex-wrap gap-3"><button onClick={scrollCheckout} className="rounded-xl px-7 py-3 font-bold text-white" style={{ background: "var(--lp-button)" }}>{page.hero?.buttonText || "অর্ডার করুন"}</button><button onClick={() => document.getElementById("product-section")?.scrollIntoView({behavior:"smooth"})} className="rounded-xl border border-white/50 px-7 py-3 font-bold">বিস্তারিত দেখুন</button></div>
+            <div className="flex flex-wrap gap-3">{showSection("checkout") && <button onClick={scrollCheckout} className="rounded-xl px-7 py-3 font-bold text-white" style={{ background: "var(--lp-button)" }}>{page.hero?.buttonText || "অর্ডার করুন"}</button>}{(showSection("product") || showSection("checkout")) && <button onClick={() => document.getElementById(showSection("product") ? "product-section" : "checkout")?.scrollIntoView({behavior:"smooth"})} className="rounded-xl border border-white/50 px-7 py-3 font-bold">বিস্তারিত দেখুন</button>}</div>
           </div>
           <img src={heroImage} alt={page.title} className="w-full max-h-[450px] object-contain rounded-3xl" />
         </div>
-      </section>
-      <section className="max-w-5xl mx-auto px-5 py-14"><h2 className="text-center text-3xl font-black mb-8">{content.problemTitle || "সমস্যা ও সমাধান"}</h2>
+      </section>}
+      {showSection("problem") && <section className="max-w-5xl mx-auto px-5 py-14"><h2 className="text-center text-3xl font-black mb-8">{content.problemTitle || "সমস্যা ও সমাধান"}</h2>
         <div className="grid md:grid-cols-2 gap-5">{[["সমস্যা",content.problems || [],"#fff7f1"],["আমাদের সমাধান",content.solutions || [],"#f4fff6"]].map(([title, list, bg]) => <div key={title} className="rounded-xl bg-white p-6 shadow-sm border-t-4" style={{borderColor:title==="সমস্যা"?"var(--lp-accent)":"var(--lp-button)"}}><h3 className="font-bold mb-4">{title}</h3>{list.map((line,i)=><p key={i} className="mb-2 text-sm">✓ {line}</p>)}</div>)}</div>
-      </section>
-      <section className="max-w-6xl mx-auto px-5 pb-14"><h2 className="text-center text-3xl font-black mb-8">{content.whyTitle || "কেন আমাদের পণ্য সেরা?"}</h2><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{(page.features || []).map((item,i)=><div key={i} className="rounded-xl bg-white p-6 shadow-sm"><div className="w-11 h-11 rounded-full text-white flex items-center justify-center mb-3" style={{background:"var(--lp-primary)"}}>✓</div><h3 className="font-bold">{item.title}</h3><p className="text-sm opacity-70 mt-2">{item.description}</p></div>)}</div></section>
-      <section className="py-14 bg-white/50" id="product-section">
+      </section>}
+      {showSection("features") && <section className="max-w-6xl mx-auto px-5 pb-14 mt-2 md:mt-8"><h2 className="text-center text-3xl font-black mb-8">{content.whyTitle || "কেন আমাদের পণ্য সেরা?"}</h2><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{(page.features || []).map((item,i)=><div key={i} className="rounded-xl bg-white p-6 shadow-sm"><div className="w-11 h-11 rounded-full text-white flex items-center justify-center mb-3" style={{background:"var(--lp-primary)"}}>✓</div><h3 className="font-bold">{item.title}</h3><p className="text-sm opacity-70 mt-2">{item.description}</p></div>)}</div></section>}
+      {showSection("product") && <section className="py-14 bg-white/50" id="product-section">
         <div className="max-w-5xl mx-auto px-5">
           <LandingProductGallery page={page} product={product} heroImage={heroImage} title={content.galleryTitle || "আমাদের গ্যালারি"} />
-          <LandingProductCard page={page} product={product} price={price} heroImage={heroImage} onOrder={scrollCheckout} />
+          {showSection("checkout") && <LandingProductCard page={page} product={product} price={price} heroImage={heroImage} onOrder={scrollCheckout} />}
         </div>
-      </section>
-      <section className="py-14 text-white" style={{background:"var(--lp-primary)"}}><div className="max-w-6xl mx-auto px-5"><h2 className="text-center text-3xl font-black mb-8">{content.benefitsTitle || "মধুর উপকারিতা"}</h2><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{(page.benefits || []).map((item,i)=><div key={i} className="bg-black/30 rounded-xl p-6"><div className="text-2xl mb-2">✦</div><h3 className="font-bold">{item.title}</h3><p className="text-sm opacity-80 mt-2">{item.description}</p></div>)}</div></div></section>
-      {page.reviewSection?.enabled !== false && reviews.length > 0 && (
+      </section>}
+      {showSection("benefits") && <section className="py-14 text-white" style={{background:"var(--lp-primary)"}}><div className="max-w-6xl mx-auto px-5"><h2 className="text-center text-3xl font-black mb-8">{content.benefitsTitle || "মধুর উপকারিতা"}</h2><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{(page.benefits || []).map((item,i)=><div key={i} className="rounded-xl border border-white/15 bg-[#081d15]/80 p-7 shadow-sm"><div className="mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-white text-3xl text-emerald-900 shadow-sm">{item.icon && /^(https?:\/\/|data:image\/)/i.test(item.icon.trim()) ? <img src={item.icon.trim()} alt="" loading="lazy" className="h-10 w-10 object-contain" /> : <span aria-hidden="true">{item.icon || "✦"}</span>}</div><h3 className="font-bold">{item.title}</h3><p className="text-sm opacity-80 mt-2">{item.description}</p></div>)}</div></div></section>}
+      {showSection("reviews") && page.reviewSection?.enabled !== false && reviews.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-5 py-14">
           <h2 className="text-center text-3xl font-black mb-9">
             {page.reviewSection?.title || "আমাদের সন্তুষ্ট গ্রাহকরা"}
@@ -178,16 +181,16 @@ const LandingPageView = () => {
           </div>
         </section>
       )}
-      {page.video?.enabled && page.video?.url && <section className="max-w-4xl mx-auto px-5 py-14"><h2 className="text-center text-3xl font-black mb-7">{content.videoTitle || "দেখুন বিস্তারিত"}</h2><div className="aspect-video rounded-2xl overflow-hidden bg-black"><iframe title="Product video" className="w-full h-full" src={page.video.url.replace("watch?v=", "embed/").split("&")[0]} allowFullScreen /></div></section>}
+      {showSection("video") && page.video?.enabled && page.video?.url && <section className="max-w-4xl mx-auto px-5 py-14"><h2 className="text-center text-3xl font-black mb-7">{content.videoTitle || "দেখুন বিস্তারিত"}</h2><div className="aspect-video rounded-2xl overflow-hidden bg-black"><iframe title="Product video" className="w-full h-full" src={page.video.url.replace("watch?v=", "embed/").split("&")[0]} allowFullScreen /></div></section>}
       {/* SPECIAL OFFER SECTION */}
-      <LandingSpecialOffer
+      {showSection("offer") && <LandingSpecialOffer
         theme={theme}
         content={content}
         onOrderClick={scrollCheckout}
-      />
+      />}
       <div className="max-w-6xl mx-auto px-3.5 sm:px-5 py-6 md:py-10">
         {/* 6. CHECKOUT SECTION */}
-        <section
+        {showSection("checkout") && <section
           id="checkout"
           className="bg-white border-2 border-rose-500/90 rounded-3xl p-5 md:p-10 shadow-xl scroll-mt-20 space-y-8"
         >
@@ -507,7 +510,7 @@ const LandingPageView = () => {
             </div>
 
           </div>
-        </section>
+        </section>}
       </div>
       <footer className="px-5 py-10 text-center text-white" style={{background:"var(--lp-primary)"}}>{content.footerText || page.title}</footer>
     </main>

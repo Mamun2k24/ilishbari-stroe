@@ -1,3 +1,5 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
@@ -6,6 +8,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global Website Typography */
+html,
+body {
+  font-family: "Hind Siliguri", "Poppins", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Anek Bangla", "Hind Siliguri", sans-serif;
+  line-height: 1.35;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+/* Premium Landing Page Typography */
+.landing-page {
+  font-family: "Hind Siliguri", sans-serif;
+}
+
+.landing-page h1,
+.landing-page h2,
+.landing-page h3 {
+  font-family: "Anek Bangla", sans-serif;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.landing-page p {
+  line-height: 1.8;
+}
+
 
 .swiper-button-next,
 .swiper-button-prev {
@@ -110,22 +145,6 @@
 
   
 }
-
-/* html, body {
-  overflow-x: hidden;
-} */
-
-
-/* @keyframes rotate-circle {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-.spin-text {
-  animation: rotate-circle 12s linear infinite;
-  transform-origin: 50% 50%;
-  transform-box: fill-box;
-} */
 
 /* Continuous marquee (no gap, no scrollbar) */
 .marquee-track {
