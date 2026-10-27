@@ -1,5 +1,5 @@
 import LandingDesignEditor, { landingThemeDefaults, landingContentDefaults } from "./LandingDesignEditor";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   FiArrowLeft,
@@ -21,6 +21,8 @@ const EditLandingPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  const axiosRef = useRef(axiosSecure);
+  axiosRef.current = axiosSecure;
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -57,11 +59,14 @@ const EditLandingPage = () => {
   });
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
     const loadData = async () => {
       try {
-        const res = await axiosSecure.get(`/api/landing-pages/${id}`);
+        const res = await axiosRef.current.get(`/api/landing-pages/${id}`);
         const data = res.data.data || res.data;
 
+        if (cancelled) return;
         setForm({
           title: data.title || "",
           slug: data.slug || "",
@@ -91,15 +96,18 @@ const EditLandingPage = () => {
           },
         });
       } catch (error) {
-        console.log(error);
-        alert("Failed to load landing page");
+        if (!cancelled) {
+          console.error(error);
+          alert("Failed to load landing page");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     loadData();
-  }, [id, axiosSecure]);
+    return () => { cancelled = true; };
+  }, [id]);
 
   const updateField = (section, key, value) => {
     setForm((prev) => ({
@@ -141,6 +149,7 @@ const EditLandingPage = () => {
 
   const savePage = async () => {
     try {
+      if (saving) return;
       setSaving(true);
       await axiosSecure.put(`/api/landing-pages/${id}`, form);
       alert("Landing page updated successfully");
