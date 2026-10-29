@@ -530,6 +530,62 @@ typeof item.icon === "string" &&
     </div>
 
     <div className={section}>
+      <h3 className={titleClass}>🌿 Hero Banner & Content</h3>
+      <p className="text-sm text-slate-500">Headline, product photo, forest background, slider ও ৩টি stats card এখান থেকে বদলান। Slider ফাঁকা থাকলে আগের Hero content দেখাবে।</p>
+      {[
+        ["badge", "Badge Text"], ["headline", "Main Headline"],
+        ["subHeadline", "Highlighted Subheadline"], ["description", "Description"],
+        ["image", "Product Image URL"], ["backgroundImage", "Background Image URL"],
+        ["buttonText", "Order Button Text"],
+      ].map(([key, label]) => (
+        <label key={key} className="block text-sm font-semibold">{label}
+          {key === "description" || key === "headline" ? (
+            <textarea rows={3} className={field} value={value.hero?.[key] || ""} onChange={e => update("hero", { ...(value.hero || {}), [key]: e.target.value })} />
+          ) : (
+            <input className={field} value={value.hero?.[key] || ""} onChange={e => update("hero", { ...(value.hero || {}), [key]: e.target.value })} />
+          )}
+        </label>
+      ))}
+      <h4 className="font-bold text-slate-800">📊 Hero Stats Cards (সর্বোচ্চ ৩টি)</h4>
+      {[0, 1, 2].map(index => {
+        const stat = value.hero?.stats?.[index] || { value: "", label: "" };
+        return <div key={index} className="grid grid-cols-2 gap-3">
+          {["value", "label"].map(key => <label key={key} className="text-xs font-semibold">Card {index + 1} {key}
+            <input className={field} value={stat[key] || ""} onChange={e => {
+              const stats = [...(value.hero?.stats || [])];
+              while (stats.length <= index) stats.push({ value: "", label: "" });
+              stats[index] = { ...stats[index], [key]: e.target.value };
+              update("hero", { ...(value.hero || {}), stats });
+            }} />
+          </label>)}
+        </div>;
+      })}
+      <div className="flex items-center justify-between gap-3">
+        <h4 className="font-bold text-slate-800">🎞️ Hero Slider</h4>
+        <button type="button" className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-bold text-white" onClick={() => update("hero", {
+          ...(value.hero || {}), slides: [...(value.hero?.slides || []), {
+            badge: value.hero?.badge || "", headline: value.hero?.headline || "", subHeadline: value.hero?.subHeadline || "",
+            description: value.hero?.description || "", image: value.hero?.image || "", backgroundImage: value.hero?.backgroundImage || "", buttonText: value.hero?.buttonText || ""
+          }]
+        })}>+ Add Slide</button>
+      </div>
+      {(value.hero?.slides || []).map((slide, index) => <div key={index} className="space-y-3 rounded-xl border border-slate-200 p-3">
+        <div className="flex items-center justify-between"><strong>Slide {index + 1}</strong>
+          <button type="button" className="text-sm font-bold text-red-600" onClick={() => update("hero", { ...(value.hero || {}), slides: value.hero.slides.filter((_, i) => i !== index) })}>Remove</button>
+        </div>
+        {[["badge", "Badge"], ["headline", "Headline"], ["subHeadline", "Subheadline"], ["description", "Description"], ["image", "Product Image URL"], ["backgroundImage", "Background URL"], ["buttonText", "Button Text"]].map(([key, label]) => <label key={key} className="block text-xs font-semibold">{label}
+          <input className={field} value={slide[key] || ""} onChange={e => {
+            const slides = [...(value.hero?.slides || [])];
+            slides[index] = { ...slides[index], [key]: e.target.value };
+            update("hero", { ...(value.hero || {}), slides });
+          }} />
+        </label>)}
+      </div>)}
+      {value.hero?.image && <img src={value.hero.image} alt="Hero product preview" className="h-44 w-full rounded-xl bg-slate-100 object-contain" />}
+      <p className="text-xs text-amber-700">Save Changes চাপুন। Slider ও Stats সংরক্ষণের জন্য Backend-এর hero schema-তে slides এবং stats field অনুমোদিত থাকতে হবে।</p>
+    </div>
+
+    <div className={section}>
       <h3 className={titleClass}>🎁 Hero-এর নিচে Combo Offer Banner</h3>
       <p className="text-sm text-slate-500">ছবি Upload করে Save Changes চাপুন। Banner-এ ক্লিক করলে Checkout-এ যাবে।</p>
       <label className="flex items-center gap-3 text-sm font-semibold">

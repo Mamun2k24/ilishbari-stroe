@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import LandingProductGallery from "./LandingProductGallery";
 
-import LandingProductCard from "./LandingProductCard";
 
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
@@ -41,6 +39,12 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import IlishBariFooter from "./IlishBariFooter";
 import LandingReviewsCarousel from "./LandingReviewsCarousel";
 import LandingMobileStickyOrder from "./LandingMobileStickyOrder";
+import StaticHero from "./static/StaticHero";
+import ProblemSolutionFeatures from "./static/ProblemSolutionFeatures";
+import LandingProductGallery from "./static/LandingProductGallery";
+import LandingProductCard from "./LandingProductCard";
+import HoneyBenefits from "./static/HoneyBenefits";
+import LandingCustomerReviews from "./static/LandingCustomerReviews";
 
 
 
@@ -63,6 +67,7 @@ const LandingPageView = () => {
 
 
   const [quantity, setQuantity] = useState(1);
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
 
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
@@ -145,6 +150,15 @@ const LandingPageView = () => {
   });
 
 
+
+  useEffect(() => {
+    const slides = page?.hero?.slides;
+    if (!Array.isArray(slides) || slides.length < 2) return;
+    const interval = window.setInterval(() => {
+      setActiveHeroSlide((current) => (current + 1) % slides.length);
+    }, 5500);
+    return () => window.clearInterval(interval);
+  }, [page?.hero?.slides]);
 
   if (isLoading) {
 
@@ -243,75 +257,143 @@ const LandingPageView = () => {
   const scrollCheckout = () => { if (showSection("checkout")) document.getElementById("checkout")?.scrollIntoView({ behavior: "smooth" }); };
 
   const heroImage = page.hero?.image || product?.productImage?.[0];
+  const heroSlides = Array.isArray(page.hero?.slides) && page.hero.slides.length
+    ? page.hero.slides
+    : [{
+      badge: page.hero?.badge,
+      headline: page.hero?.headline,
+      subHeadline: page.hero?.subHeadline,
+      description: page.hero?.description,
+      image: heroImage,
+      backgroundImage: page.hero?.backgroundImage,
+      buttonText: page.hero?.buttonText,
+    }];
+  const currentHero = heroSlides[Math.min(activeHeroSlide, heroSlides.length - 1)] || heroSlides[0];
+  const heroStats = Array.isArray(page.hero?.stats) ? page.hero.stats : [];
+
+  // Only rotate when multiple slides are configured.
+  // This hook must be declared before early returns; the slider itself is rendered below.
+
 
   const reviews = page.testimonials || [];
 
   return (
 
-    <main style={{ "--lp-primary": theme.primary, "--lp-accent": theme.accent, "--lp-bg": theme.background, "--lp-button": theme.button, "--lp-text": theme.text, background: "var(--lp-bg)", color: "var(--lp-text)" }} className={`min-h-screen font-sans ${showSection("checkout") ? "pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0" : ""}`}>
+    
+<main
+  style={{
+    "--lp-primary": theme.primary,
+    "--lp-accent": theme.accent,
+    "--lp-bg": theme.background,
+    "--lp-button": theme.button,
+    "--lp-text": theme.text,
+    background: "var(--lp-bg)",
+    color: "var(--lp-text)",
+  }}
+  className="min-h-screen font-sans pb-0"
+>
 
-      {showSection("hero") && <section className="relative overflow-hidden text-white" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,35,23,.93) 0%, rgba(5,35,23,.72) 38%, rgba(5,35,23,.26) 72%, rgba(5,35,23,.10) 100%), url("${page.hero?.backgroundImage || "https\://i.ibb.co.com/KpzYJ1VQ/cover.jpg"}")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundColor: "var(--lp-primary)" }}>
 
-        <div className="max-w-6xl mx-auto px-4 pt-7 pb-5 md:px-5 md:py-24 grid md:grid-cols-2 gap-5 md:gap-10 items-center">
-
-          <div className="space-y-3 md:space-y-5">
-
-            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold" style={{ background: "var(--lp-accent)", color: "#18251a" }}>{page.hero?.badge || "প্রিমিয়াম কোয়ালিটি"}</span>
-
-            <h1 className="text-[27px] sm:text-4xl md:text-6xl font-extrabold leading-[1.2] md:leading-[1.25] tracking-normal">
-
-              {page.hero?.headline || page.title}
-
-            </h1>
-
-            <p className="text-[13px] leading-5 sm:text-base md:text-lg font-bold" style={{ color: "var(--lp-accent)" }}>{page.hero?.subHeadline}</p>
-
-            <div className="flex flex-wrap gap-2 md:gap-3">{showSection("checkout") && <button onClick={scrollCheckout} className="rounded-xl px-4 py-2.5 text-sm md:px-7 md:py-3 md:text-base font-bold text-white" style={{ background: "var(--lp-button)" }}>{page.hero?.buttonText || "অর্ডার করুন"}</button>}{(showSection("product") || showSection("checkout")) && <button onClick={() => document.getElementById(showSection("product") ? "product-section" : "checkout")?.scrollIntoView({ behavior: "smooth" })} className="rounded-xl border border-white/50 px-4 py-2.5 text-sm md:px-7 md:py-3 md:text-base font-bold">বিস্তারিত দেখুন</button>}</div>
-
+      {/* {showSection("hero") && (
+        <section
+          className="relative isolate overflow-hidden text-white"
+          style={{ backgroundColor: "var(--lp-primary)" }}
+          aria-label="Hero Banner"
+        >
+          <div
+            className="absolute inset-0 -z-10 bg-cover bg-center transition-all duration-700"
+            style={{
+              backgroundImage: `linear-gradient(90deg, rgba(2,32,19,.94) 0%, rgba(2,32,19,.80) 46%, rgba(2,32,19,.47) 100%), url("${currentHero.backgroundImage || page.hero?.backgroundImage || "https://i.ibb.co.com/KpzYJ1VQ/cover.jpg"}")`,
+            }}
+          />
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-10 sm:px-6 md:min-h-[570px] md:grid-cols-2 md:gap-10 md:py-16">
+            <div className="relative z-10 space-y-5">
+              <span className="inline-flex rounded-full px-5 py-2 text-xs font-extrabold shadow-md" style={{ background: "var(--lp-accent)", color: "#17281b" }}>
+                {currentHero.badge || page.hero?.badge || "প্রিমিয়াম কোয়ালিটি"}
+              </span>
+              <h1 className="max-w-2xl whitespace-pre-line text-4xl font-black leading-[1.25] tracking-tight sm:text-5xl lg:text-[58px]">
+                {currentHero.headline || page.hero?.headline || page.title}
+              </h1>
+              {(currentHero.subHeadline || page.hero?.subHeadline) && (
+                <p className="max-w-xl text-xl font-extrabold leading-relaxed sm:text-2xl" style={{ color: "var(--lp-accent)" }}>
+                  {currentHero.subHeadline || page.hero?.subHeadline}
+                </p>
+              )}
+              {(currentHero.description || page.hero?.description) && (
+                <p className="max-w-lg whitespace-pre-line text-sm leading-7 text-white/85 sm:text-base">
+                  {currentHero.description || page.hero?.description}
+                </p>
+              )}
+              <div className="flex flex-wrap gap-3 pt-1">
+                {showSection("checkout") && (
+                  <button type="button" onClick={scrollCheckout} className="rounded-xl px-7 py-3.5 font-extrabold text-white shadow-lg transition hover:brightness-110" style={{ background: "var(--lp-button)" }}>
+                    {currentHero.buttonText || page.hero?.buttonText || "এখনই অর্ডার করুন"}
+                  </button>
+                )}
+                {(showSection("product") || showSection("checkout")) && (
+                  <button type="button" onClick={() => document.getElementById(showSection("product") ? "product-section" : "checkout")?.scrollIntoView({ behavior: "smooth" })} className="rounded-xl border border-white/50 bg-white/10 px-7 py-3.5 font-extrabold text-white backdrop-blur-sm transition hover:bg-white/20">
+                    বিস্তারিত দেখুন
+                  </button>
+                )}
+              </div>
+              {heroSlides.length > 1 && (
+                <div className="flex items-center gap-2 pt-3" aria-label="Hero slider controls">
+                  {heroSlides.map((slide, index) => (
+                    <button key={index} type="button" onClick={() => setActiveHeroSlide(index)} aria-label={`Slide ${index + 1}`} aria-current={activeHeroSlide === index ? "true" : undefined}
+                      className={`h-2.5 rounded-full transition-all ${activeHeroSlide === index ? "w-9 bg-amber-400" : "w-2.5 bg-white/50"}`} />
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="relative flex min-w-0 flex-col items-center justify-center gap-6">
+              {(currentHero.image || heroImage) && (
+                <img src={currentHero.image || heroImage} alt={page.title || "পণ্য"} className="relative z-10 max-h-[330px] w-full max-w-[520px] object-contain drop-shadow-[0_22px_24px_rgba(0,0,0,.35)] sm:max-h-[410px] md:max-h-[460px]" loading="eager" />
+              )}
+              {heroStats.length > 0 && (
+                <div className="relative z-10 grid w-full grid-cols-3 gap-2 sm:gap-3">
+                  {heroStats.slice(0, 3).map((stat, index) => (
+                    <div key={index} className="rounded-xl border border-white/20 bg-[#081e16]/85 px-2 py-3 text-center shadow-xl backdrop-blur-sm sm:px-4 sm:py-4">
+                      <div className="text-lg font-black sm:text-2xl" style={{ color: "var(--lp-accent)" }}>{stat.value}</div>
+                      <div className="mt-1 text-[10px] text-white/80 sm:text-xs">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+        </section>
+      )} */}
 
-          <img src={heroImage} alt={page.title} className="w-full max-h-[230px] sm:max-h-[330px] md:max-h-[450px] object-contain rounded-2xl md:rounded-3xl" />
 
-        </div>
 
-      </section>}
+      {showSection("hero") && (
+        <StaticHero onOrder={scrollCheckout} />
+      )}
 
-      {/* Hero-এর ঠিক নিচে Dynamic Combo Offer Banner */}
-      {content.comboBanner?.enabled === true && content.comboBanner?.image && (
+
+      <ProblemSolutionFeatures />
+      <LandingProductGallery />
+      {/* Original dashboard-linked product card; static gallery remains unchanged. */}
+      {showSection("product") && (
+        <section id="product-section" className="bg-white/50 py-0.5">
+          <div className="mx-auto max-w-5xl px-3 sm:px-5">
+            <LandingProductCard
+              page={page}
+              product={product}
+              price={price}
+              heroImage={heroImage}
+              onOrder={scrollCheckout}
+            />
+          </div>
+        </section>
+      )}
+      <HoneyBenefits />
+      <LandingCustomerReviews />
+
+      {/* {content.comboBanner?.enabled === true && content.comboBanner?.image && (
         <section className="mx-auto max-w-6xl px-2 py-2 sm:px-5 sm:py-4 md:py-6" aria-label="কম্বো অফার">
-          {/* Strong, noticeable offer animation — only the combo banner. */}
-          <style>{`
-            @keyframes lpOfferEntrance {
-              0% { opacity: 0; transform: scale(.88) translateY(25px); }
-              65% { opacity: 1; transform: scale(1.035) translateY(0); }
-              100% { opacity: 1; transform: scale(1); }
-            }
-            @keyframes lpOfferAttention {
-              0%, 68%, 100% { transform: scale(1); filter: saturate(1); }
-              74% { transform: scale(1.025) rotate(-.4deg); filter: saturate(1.15); }
-              80% { transform: scale(1.025) rotate(.4deg); }
-              86% { transform: scale(1.015) rotate(0); }
-              92% { transform: scale(1); }
-            }
-            @keyframes lpOfferBorder {
-              0%, 60%, 100% { box-shadow: 0 0 0 2px rgba(255,190,0,.15); }
-              70%, 85% { box-shadow: 0 0 0 4px #fbbf24, 0 0 30px 8px rgba(251,191,36,.55); }
-            }
-           
-.lp-combo-animated {
-  position: relative;
-  isolation: isolate;
-  transform-origin: center;
-  animation: lpOfferEntrance .85s cubic-bezier(.2,.9,.25,1.2) both,
-             lpOfferAttention 3s ease-in-out 1s infinite,
-             lpOfferBorder 3s ease-in-out 1s infinite;
-  will-change: transform;
-}
-
-            @media (prefers-reduced-motion: reduce) {
-              .lp-combo-animated { animation: none; }
-            }
-          `}</style>
+    
+   
           <button
             type="button"
             onClick={scrollCheckout}
@@ -327,15 +409,15 @@ const LandingPageView = () => {
             />
           </button>
         </section>
-      )}
+      )} */}
 
-      {showSection("problem") && <section className="max-w-5xl mx-auto px-5 py-14"><h2 className="text-center text-3xl font-black mb-8">{content.problemTitle || "সমস্যা ও সমাধান"}</h2>
+      {/* {showSection("problem") && <section className="max-w-5xl mx-auto px-5 py-14"><h2 className="text-center text-3xl font-black mb-8">{content.problemTitle || "সমস্যা ও সমাধান"}</h2>
 
         <div className="grid md:grid-cols-2 gap-5">{[["সমস্যা", content.problems || [], "#fff7f1"], ["আমাদের সমাধান", content.solutions || [], "#f4fff6"]].map(([title, list, bg]) => <div key={title} className="rounded-xl bg-white p-6 shadow-sm border-t-4" style={{ borderColor: title === "সমস্যা" ? "var(--lp-accent)" : "var(--lp-button)" }}><h3 className="font-bold mb-4">{title}</h3>{list.map((line, i) => <p key={i} className="mb-2 text-sm">✓ {line}</p>)}</div>)}</div>
 
-      </section>}
+      </section>} */}
 
-      {showSection("features") && <section className="max-w-6xl mx-auto px-3 pb-7 mt-2 sm:px-5 sm:pb-14 md:mt-8"><h2 className="text-center text-xl font-black mb-4 sm:text-3xl sm:mb-8">{content.whyTitle || "কেন আমাদের পণ্য সেরা?"}</h2><div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">{(page.features || []).map((item, i) => <div key={i} className="rounded-xl bg-white p-3 sm:p-6 shadow-sm"><div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full text-white flex items-center justify-center mb-2 sm:mb-3 text-sm sm:text-base" style={{ background: "var(--lp-primary)" }}>✓</div><h3 className="font-bold text-xs leading-5 sm:text-base">{item.title}</h3><p className="text-[11px] leading-[1.55] sm:text-sm opacity-70 mt-1 sm:mt-2">{item.description}</p></div>)}</div></section>}
+      {/* {showSection("features") && <section className="max-w-6xl mx-auto px-3 pb-7 mt-2 sm:px-5 sm:pb-14 md:mt-8"><h2 className="text-center text-xl font-black mb-4 sm:text-3xl sm:mb-8">{content.whyTitle || "কেন আমাদের পণ্য সেরা?"}</h2><div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">{(page.features || []).map((item, i) => <div key={i} className="rounded-xl bg-white p-3 sm:p-6 shadow-sm"><div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full text-white flex items-center justify-center mb-2 sm:mb-3 text-sm sm:text-base" style={{ background: "var(--lp-primary)" }}>✓</div><h3 className="font-bold text-xs leading-5 sm:text-base">{item.title}</h3><p className="text-[11px] leading-[1.55] sm:text-sm opacity-70 mt-1 sm:mt-2">{item.description}</p></div>)}</div></section>}
 
       {showSection("product") && <section className="py-8 bg-white/50" id="product-section">
 
@@ -347,20 +429,20 @@ const LandingPageView = () => {
 
         </div>
 
-      </section>}
+      </section>} */}
 
       {showSection("benefits") && (
-//        <section
-//   className="py-7 sm:py-12 lg:py-14 text-white"
-//   style={{
-//     background:
-//       "linear-gradient(135deg, #003D29 0%, #005B36 55%, #08764A 100%)",
-//   }}
-// >
-<section
-  className="relative overflow-hidden py-7 sm:py-12 lg:py-14 text-white"
-  style={{
-    backgroundImage: `
+        //        <section
+        //   className="py-7 sm:py-12 lg:py-14 text-white"
+        //   style={{
+        //     background:
+        //       "linear-gradient(135deg, #003D29 0%, #005B36 55%, #08764A 100%)",
+        //   }}
+        // >
+        <section
+          className="relative overflow-hidden py-7 sm:py-12 lg:py-14 text-white"
+          style={{
+            backgroundImage: `
       linear-gradient(
         135deg,
         rgba(0, 45, 28, 0.72),
@@ -368,12 +450,12 @@ const LandingPageView = () => {
       ),
       url("https://i.ibb.co.com/yn4T1NFB/vive.jpg")
     `,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    backgroundColor: "#005B36",
-  }}
->
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundColor: "#005B36",
+          }}
+        >
           <div className="max-w-6xl mx-auto px-3 sm:px-5">
             <h2 className="text-center text-xl sm:text-3xl font-black mb-4 sm:mb-8">
               {content.benefitsTitle || "মধুর উপকারিতা"}
@@ -401,8 +483,31 @@ const LandingPageView = () => {
         <LandingReviewsCarousel reviews={reviews} title={page.reviewSection?.title || "আমাদের সন্তুষ্ট গ্রাহকরা"} />
       )}
 
-      {showSection("video") && page.video?.enabled && page.video?.url && <section className="max-w-4xl mx-auto px-5 py-2"><h2 className="text-center text-3xl font-black mb-7">{content.videoTitle || "দেখুন বিস্তারিত"}</h2><div className="aspect-video rounded-2xl overflow-hidden bg-black"><iframe title="Product video" className="w-full h-full" src={page.video.url.replace("watch?v=", "embed/").split("&")[0]} allowFullScreen /></div></section>}
+      {showSection("video") && page.video?.enabled && page.video?.url && (
+  <section className="max-w-4xl mx-auto px-4 py-6 md:py-10">
+    {/* Heading */}
+    <div className="text-center mb-6">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900">
+        দেখুন কীভাবে <span className="text-[#10b981]">সংগ্রহ করা হয়</span>
+      </h2>
+      <p className="mt-1.5 text-xs sm:text-sm text-gray-600 font-medium">
+        সুন্দরবনের গহীন বন থেকে প্রাকৃতিকভাবে মধু সংগ্রহ
+      </p>
+    </div>
 
+    {/* White Box Container / Border Wrapper */}
+    <div className="bg-[#f8fbf9] rounded-3xl p-3 sm:p-5 shadow-sm border border-gray-100/80">
+      <div className="aspect-video rounded-2xl overflow-hidden bg-black shadow-inner">
+        <iframe
+          title="Product video"
+          className="w-full h-full"
+          src={page.video.url.replace("watch?v=", "embed/").split("&")[0]}
+          allowFullScreen
+        />
+      </div>
+    </div>
+  </section>
+)}
       {/* SPECIAL OFFER SECTION */}
 
       {showSection("offer") && <LandingSpecialOffer
@@ -821,19 +926,27 @@ const LandingPageView = () => {
 
 
 
-              <button
-
-                type="submit"
-
-                disabled={submittingOrder || shippingLoading || shippingError}
-
-                className="w-full bg-rose-600 hover:bg-rose-700 active:scale-98 text-white py-4 rounded-2xl font-black text-base md:text-lg shadow-xl shadow-rose-200 transition"
-
-              >
-
-                ✅ ৳{total} দিয়ে অর্ডার নিশ্চিত করুন
-
-              </button>
+          <button
+  type="submit"
+  disabled={submittingOrder || shippingLoading || shippingError}
+  className="
+    w-full
+    bg-[#249856]
+    hover:bg-[#1b7f47]
+    active:scale-[0.98]
+    disabled:opacity-50
+    disabled:cursor-not-allowed
+    text-white
+    py-4
+    rounded-2xl
+    font-black
+    text-base md:text-lg
+    shadow-xl shadow-green-900/20
+    transition-all duration-300
+  "
+>
+  ✅ ৳{total} দিয়ে অর্ডার নিশ্চিত করুন
+</button>
 
             </form>
 
@@ -851,8 +964,8 @@ const LandingPageView = () => {
 
       <IlishBariFooter />
 
-      {showSection("checkout") && <LandingMobileStickyOrder onOrder={scrollCheckout} />}
-
+      {/* {showSection("checkout") && <LandingMobileStickyOrder onOrder={scrollCheckout} />}
+ */}
 
 
     </main>

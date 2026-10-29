@@ -3,13 +3,12 @@ import {
   FiShoppingCart,
   FiTruck,
   FiDollarSign,
-  FiGift,
 } from "react-icons/fi";
 
 const DEFAULT_BENEFITS = [
-  { icon: "cart", title: "ঢাকায় ডেলিভারি", description: "ঢাকার ভিতরে দ্রুত ডেলিভারি" },
-  { icon: "truck", title: "ঢাকার বাইরে", description: "হাতে পেয়ে টাকা দিন" },
-  { icon: "cash", title: "ক্যাশ অন ডেলিভারি", description: "দেশের যেকোনো জায়গায় পৌঁছে যাবে" },
+  { icon: "cart", title: "ঢাকায় ডেলিভারি", description: "ঢাকার ভিতরে দ্রুত ডেলিভারি" },
+  { icon: "cash", title: "ক্যাশ অন ডেলিভারি", description: "দেশের যেকোনো জায়গায় পৌঁছে যাবে" },
+  { icon: "truck", title: "ঢাকার বাইরে", description: "হাতে পেয়ে টাকা দিন" },
 ];
 
 const ICONS = {
@@ -19,16 +18,12 @@ const ICONS = {
 };
 
 const LandingSpecialOffer = ({ theme = {}, content = {}, onOrderClick }) => {
-  const primary = theme.primary || "#064E2B";
-  const buttonColor = theme.button || "#219653";
-  const accentColor = theme.accent || "#2CA85D";
-  const sectionBg = theme.sectionBg || "#E5F4E9";
-
   const offer = content.specialOffer || {};
   const headingBefore = offer.headingBefore ?? "আজ";
   const headingHighlight = offer.headingHighlight ?? "অর্ডার করলে পাচ্ছেন";
   const headingAfter = offer.headingAfter ?? "বিশেষ ডিসকাউন্ট!";
-  const buttonText = offer.buttonText || "এখনই অর্ডার করুন";
+  const buttonText = offer.buttonText || "এখনই অর্ডার করুন 🍯";
+  
   const benefits = Array.isArray(offer.benefits) && offer.benefits.length > 0
     ? offer.benefits
     : DEFAULT_BENEFITS;
@@ -42,58 +37,117 @@ const LandingSpecialOffer = ({ theme = {}, content = {}, onOrderClick }) => {
   };
 
   return (
-    <section
-      className="relative w-full overflow-hidden px-3 py-5 sm:px-6  md:py-20"
-      style={{ backgroundColor: sectionBg }}
-    >
-      <div className="relative mx-auto max-w-5xl">
-        <div className="relative overflow-hidden rounded-[18px] border border-white/70 bg-white/85 px-3 py-5 shadow-[0_12px_45px_rgba(6,78,43,0.09)] sm:rounded-[24px] sm:px-8 sm:py-8 md:rounded-[30px] md:px-12 md:py-12">
-          <div className="mb-4 text-center sm:mb-8 md:mb-10">
-            <h2 className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-[19px] font-black leading-[1.4] tracking-tight text-gray-950 sm:gap-x-2 sm:text-[30px] md:text-[36px] lg:text-[40px]">
-              <FiGift className="mr-0.5 inline-block shrink-0 text-orange-500 sm:mr-1" size={25} />
+    <section className="w-full bg-[#e8f3ec] py-2 md:py-12 px-3 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-4xl mx-auto">
+        {/* Main White Card Container */}
+        <div className="bg-[#f8fbf9] rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 shadow-sm border border-gray-100/80 text-center">
+          
+          {/* Section Heading */}
+          <div className="mb-5 sm:mb-8 text-center">
+            <h2 className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 leading-tight">
+              <span className="text-xl sm:text-3xl md:text-4xl">🎁</span>
               <span>{headingBefore}</span>
-              <span style={{ color: accentColor }}>{headingHighlight}</span>
+              <span className="text-[#10b981]">{headingHighlight}</span>
               <span>{headingAfter}</span>
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 md:gap-5">
-            {benefits.map((item, index) => {
-              const Icon = ICONS[item.icon] || FiTruck;
-              return (
-                <div
-                  key={`${item.title}-${index}`}
-                  className="group flex min-w-0 flex-col items-center justify-start rounded-xl px-2 py-3 text-center transition-all duration-300 hover:shadow-lg sm:min-h-[190px] sm:justify-center sm:rounded-2xl sm:px-4 sm:py-7 md:min-h-[210px] md:hover:-translate-y-1"
-                  style={{ backgroundColor: "rgba(30, 150, 80, 0.10)" }}
-                >
-                  <div
-                    className="mb-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white shadow-sm transition-transform duration-300 group-hover:scale-105 sm:mb-5 sm:h-[62px] sm:w-[62px] md:h-[68px] md:w-[68px]"
-                    style={{ backgroundColor: primary }}
-                  >
-                    <Icon className="h-[18px] w-[18px] sm:h-7 sm:w-7" strokeWidth={2} />
-                  </div>
-                  <h3 className="mb-1 break-words text-[12px] font-extrabold leading-[1.45] text-gray-950 sm:mb-3 sm:text-[17px] md:text-[19px]">
-                    {item.title}
-                  </h3>
-                  <p className="break-words text-[11px] leading-[1.5] text-gray-600 sm:text-[14px] sm:leading-relaxed md:text-[15px]">
-                    {item.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-5 flex items-center justify-center sm:mt-8 md:mt-10">
+          {/* Action Button (Mobile First Top / Desktop Bottom) */}
+          <div className="mb-5 block md:hidden">
             <button
               type="button"
               onClick={scrollToCheckout}
-              className="group inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-extrabold text-white shadow-[0_8px_20px_rgba(20,130,60,0.18)] transition-all duration-300 hover:shadow-xl active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:min-h-[60px] sm:w-auto sm:gap-3 sm:px-8 sm:py-4 sm:text-lg md:px-12 md:text-xl md:hover:-translate-y-1"
-              style={{ background: `linear-gradient(110deg, ${primary}, ${buttonColor})`, outlineColor: primary }}
+              className="w-full inline-flex items-center justify-center bg-[#219653] hover:bg-[#1a7a43] text-white px-6 py-3 rounded-xl font-extrabold text-base shadow-sm transition-all active:scale-95"
             >
-              <span>{buttonText}</span>
-              <FiShoppingCart className="h-[18px] w-[18px] transition-transform group-hover:translate-x-1 sm:h-[22px] sm:w-[22px]" />
+              {buttonText}
             </button>
           </div>
+
+          {/* Benefits Grid: Mobile-e 2 top + 1 full bottom, Desktop-e 3 in 1 row */}
+          <div className="w-full">
+            {/* Mobile Layout */}
+            <div className="block md:hidden space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                {benefits.slice(0, 2).map((item, index) => {
+                  const Icon = ICONS[item.icon] || FiTruck;
+                  return (
+                    <div
+                      key={index}
+                      className="bg-[#e1ece4] rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center text-center"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-[#064e3b] text-white flex items-center justify-center mb-2.5 shrink-0 shadow-sm">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-xs sm:text-sm font-bold text-gray-900 mb-1">
+                        {item.title}
+                      </h3>
+                      <p className="text-[10px] sm:text-xs text-gray-600 leading-tight font-medium">
+                        {item.description}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 3rd Card Full Width on Mobile */}
+              {benefits[2] && (
+                <div className="w-full">
+                  {(() => {
+                    const item = benefits[2];
+                    const Icon = ICONS[item.icon] || FiTruck;
+                    return (
+                      <div className="bg-[#e1ece4] rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                        <div className="w-10 h-10 rounded-full bg-[#064e3b] text-white flex items-center justify-center mb-2.5 shrink-0 shadow-sm">
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <h3 className="text-xs sm:text-sm font-bold text-gray-900 mb-1">
+                          {item.title}
+                        </h3>
+                        <p className="text-[10px] sm:text-xs text-gray-600 leading-tight font-medium">
+                          {item.description}
+                        </p>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Layout (3-Columns) */}
+            <div className="hidden md:grid md:grid-cols-3 gap-5">
+              {benefits.map((item, index) => {
+                const Icon = ICONS[item.icon] || FiTruck;
+                return (
+                  <div
+                    key={index}
+                    className="bg-[#e1ece4] rounded-2xl p-6 flex flex-col items-center justify-center text-center transition hover:shadow-sm"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-[#064e3b] text-white flex items-center justify-center mb-4 shrink-0 shadow-sm">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1.5">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                      {item.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Action Button (Desktop Only at Bottom) */}
+          <div className="hidden md:flex justify-center mt-8">
+            <button
+              type="button"
+              onClick={scrollToCheckout}
+              className="inline-flex items-center justify-center bg-[#219653] hover:bg-[#1a7a43] text-white px-8 py-3.5 rounded-xl font-bold text-lg shadow-md transition-all active:scale-95"
+            >
+              {buttonText}
+            </button>
+          </div>
+
         </div>
       </div>
     </section>

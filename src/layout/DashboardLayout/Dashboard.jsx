@@ -176,11 +176,11 @@ export default function Dashboard() {
 
           { to: "/dashboard/color", icon: <FiDroplet />, label: "Colors" },
           { to: "/dashboard/brands", icon: <FiBookmark />, label: "Brands" },
-          // {
-          //   to: "/dashboard/stock-management",
-          //   label: "Stock Management",
-          //   icon: <HiOutlineArchive />,
-          // },
+          {
+            to: "/dashboard/stock-management",
+            label: "Stock Management",
+            icon: <HiOutlineArchive />,
+          },
           // { to: "/dashboard/hero", icon: <FiImage />, label: "Banners" },
           // { to: "/dashboard/video", icon: <FiVideo />, label: "Videos" },
         ],

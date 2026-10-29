@@ -43,9 +43,9 @@ export default function IlishBariFooter({
   ];
 
   return (
-    <footer className="bg-[#005b36] text-white">
+   <footer className="w-full bg-[#005b36] text-white !mb-0 !pb-0">
       {/* 1. Feature Grid Section */}
-      <div className="border-b border-white/10">
+      {/* <div className="border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 divide-y sm:divide-y-0 sm:divide-x divide-emerald-400/20">
             {features.map((item, index) => (
@@ -70,10 +70,10 @@ export default function IlishBariFooter({
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* 2. Main Footer Content (Expanded Grid Layout) */}
-      <div className="mx-auto max-w-7xl px-6 py-10 sm:py-12">
+      <div className="mx-auto max-w-7xl px-6 py-10  sm:py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {/* Column 1: Brand Info & Description */}
           <div className="lg:col-span-1">
@@ -158,42 +158,14 @@ export default function IlishBariFooter({
             </ul>
           </div>
 
-          {/* Column 4: Quick Order / Call Action */}
-          <div className="bg-white/5 p-5 rounded-xl border border-white/10 flex flex-col justify-between">
-            <div>
-              <h4 className="font-semibold text-sm text-white">সহজ অর্ডারের জন্য</h4>
-              <p className="text-xs text-emerald-100/80 mt-1">
-                যেকোনো প্রয়োজনে সরাসরি কল করুন অথবা হোয়াটসঅ্যাপে মেসেজ দিন।
-              </p>
-            </div>
-            <div className="mt-4 flex flex-col gap-2">
-              {phone && (
-                <a
-                  href={`tel:${phone}`}
-                  className="flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 text-xs font-bold text-[#005b36] transition hover:bg-emerald-100"
-                >
-                  <FaPhoneAlt /> কল করুন
-                </a>
-              )}
-              {whatsappNumber && (
-                <a
-                  href={`https://wa.me/${whatsappNumber}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-xs font-bold text-white transition hover:bg-white/10"
-                >
-                  <FaWhatsapp /> হোয়াটসঅ্যাপ মেসেজ
-                </a>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
       {/* 3. Copyright Bottom Bar */}
-      <div className="border-t border-white/10 bg-[#00472b] px-4 py-3 text-center text-xs text-emerald-100/80">
-        © {new Date().getFullYear()} ইলিশ বাড়ি। সর্বস্বত্ব সংরক্ষিত।
-      </div>
+      {/* Copyright Bottom Bar */}
+<div className="w-full border-t border-white/10 bg-[#00472b] px-4 py-3 text-center text-xs text-emerald-100/80 !mb-0">
+  © {new Date().getFullYear()} ইলিশ বাড়ি। সর্বস্বত্ব সংরক্ষিত।
+</div>
     </footer>
   );
 }
