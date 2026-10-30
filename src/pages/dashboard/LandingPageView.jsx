@@ -485,15 +485,17 @@ const LandingPageView = () => {
 
       {showSection("video") && page.video?.enabled && page.video?.url && (
   <section className="max-w-4xl mx-auto px-4 py-6 md:py-10">
-    {/* Heading */}
-    <div className="text-center mb-6">
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900">
-        দেখুন কীভাবে <span className="text-[#10b981]">সংগ্রহ করা হয়</span>
-      </h2>
-      <p className="mt-1.5 text-xs sm:text-sm text-gray-600 font-medium">
-        সুন্দরবনের গহীন বন থেকে প্রাকৃতিকভাবে মধু সংগ্রহ
-      </p>
-    </div>
+ 
+{/* Heading */}
+<div className="text-center mb-6">
+  <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900">
+    দেখুন কীভাবে <span className="text-[#10b981]">তৈরি করা হয়</span>
+  </h2>
+  <p className="mt-1.5 text-xs sm:text-sm text-gray-600 font-medium">
+    বাছাই করা ইলিশ ও মসলার সমন্বয়ে সুস্বাদু ইলিশের আচার তৈরি
+  </p>
+</div>
+
 
     {/* White Box Container / Border Wrapper */}
     <div className="bg-[#f8fbf9] rounded-3xl p-3 sm:p-5 shadow-sm border border-gray-100/80">

@@ -1,6 +1,8 @@
+
 import React from "react";
 
-// SVG Icons
+// SVG Icons — আগের মতোই থাকবে
+
 const IconImmunity = () => (
   <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#103020]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -41,38 +43,38 @@ export default function HoneyBenefits() {
   const benefits = [
     {
       id: 1,
-      title: "রোগ প্রতিরোধ ক্ষমতা বাড়ায়",
-      desc: "ইমিউনিটি সিস্টেম শক্তিশালী করে সুস্থ রাখে",
+      title: "বাছাই করা উপকরণ",
+      desc: "নির্বাচিত উপকরণ ও মসলার সমন্বয়ে তৈরি আচার",
       icon: <IconImmunity />,
     },
     {
       id: 2,
-      title: "হজমে সাহায্য করে",
-      desc: "পেটের সমস্যা দূর করে এবং হজম শক্তি বাড়ায়",
+      title: "খাবারের স্বাদ বাড়ায়",
+      desc: "ভাত ও খিচুড়ির সঙ্গে খাবারে নতুন স্বাদ যোগ করে",
       icon: <IconDigestion />,
     },
     {
       id: 3,
-      title: "শক্তি বৃদ্ধি করে",
-      desc: "প্রতিদিন মধু খেলে শরীরে এনার্জি বাড়ে এবং ক্লান্তি দূর হয়",
+      title: "ঝাল-মসলার দারুণ স্বাদ",
+      desc: "প্রতিটি আচারে মসলার স্বাদ ও ঝালের মজাদার সমন্বয়",
       icon: <IconEnergy />,
     },
     {
       id: 4,
-      title: "স্মৃতিশক্তি উন্নত করে",
-      desc: "মস্তিষ্কের কার্যক্ষমতা বাড়ায় ও স্মৃতিশক্তি তীক্ষ্ণ করে",
+      title: "তিন রকমের আচার",
+      desc: "ইলিশ, শুঁটকি ও গরুর মাংসের তিনটি ভিন্ন স্বাদ",
       icon: <IconBrain />,
     },
     {
       id: 5,
-      title: "শিশুদের জন্যও উপকারী",
-      desc: "১ বছরের বেশি বয়সী শিশুদের বিকাশে সহায়কের ভূমিকা পালন করে",
+      title: "পরিবারের খাবারের সঙ্গী",
+      desc: "দুপুর ও রাতের খাবারে বাড়তি স্বাদ যোগ করার জন্য",
       icon: <IconChildren />,
     },
     {
       id: 6,
-      title: "ত্বক ও চুলের যত্নে",
-      desc: "প্রাকৃতিক উপায়ে ত্বক উজ্জ্বল ও চুল মজবুত করে",
+      title: "মজাদার স্বাদ ও ঘ্রাণ",
+      desc: "বাছাই করা মসলায় তৈরি সুস্বাদু আচারের আয়োজন",
       icon: <IconSkin />,
     },
   ];
@@ -80,18 +82,18 @@ export default function HoneyBenefits() {
   return (
     <section className="w-full bg-[#103020] py-10 sm:py-14 px-3 sm:px-6 lg:px-8 text-white font-sans mt-5">
       <div className="max-w-6xl mx-auto">
-        
+
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-            মধুর <span className="text-[#f59e0b]">উপকারিতা</span>
+            আমাদের <span className="text-[#f59e0b]">আচারের বৈশিষ্ট্য</span>
           </h2>
           <p className="mt-1.5 text-xs sm:text-base text-gray-300 opacity-80">
-            প্রতিদিন মধু খাওয়ার অসাধারণ সব উপকারিতা
+            ইলিশ বাড়ির তিন রকমের আচারের মজাদার সব বৈশিষ্ট্য
           </p>
         </div>
 
-        {/* Benefits Grid: Mobile-e 2 columns (grid-cols-2) and Desktop-e 3 columns (lg:grid-cols-3) */}
+        {/* Benefits Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-5">
           {benefits.map((item) => (
             <div
