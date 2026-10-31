@@ -5,22 +5,22 @@ export default function LandingProductGallery({ title }) {
   const galleryImages = [
     {
       id: 1,
-      src: "https://rkweblab.com/wp-content/uploads/2026/09/imageye___-_imgi_4_honey-gallery-2-BEu20ohw.jpg",
+      src: "https://ilishbari.store/assets/illish-DlHvObFQ.png",
       alt: "খাঁটি মধু চামচে পড়া দৃশ্য",
     },
     {
       id: 2,
-      src: "https://rkweblab.com/wp-content/uploads/2026/09/imageye___-_imgi_3_honey-gallery-1-BvxTQsBz.png",
+      src: "https://ilishbari.store/assets/illish-DlHvObFQ.png",
       alt: "সুন্দরবনের মৌয়াল মধু সংগ্রহ করছে",
     },
     {
       id: 3,
-      src: "https://images.unsplash.com/photo-1587049352851-8d4e89133924?auto=format&fit=crop&w=800&q=80",
+      src: "https://i.ibb.co.com/s9LcZfkM/hilsha-removebg-preview.png",
       alt: "মৌমাছি ও মধুর চাক",
     },
     {
       id: 4,
-      src: "https://rkweblab.com/wp-content/uploads/2026/09/honey-hero-v2-BNd05Zkx.png",
+      src: "https://i.ibb.co.com/Q3kTw2sy/hilsha.jpg",
       alt: "আমাদের মধু জার ও চাক",
     },
   ];
@@ -46,7 +46,7 @@ export default function LandingProductGallery({ title }) {
         <div className="bg-white rounded-3xl p-4 sm:p-5 shadow-sm border border-gray-100">
           
           {/* Main Featured Image */}
-          <div className="relative overflow-hidden rounded-2xl bg-gray-100 aspect-[4/3] mb-3.5">
+          <div className="relative overflow-hidden rounded-2xl  aspect-[4/3] mb-3.5">
             <img
               src={selectedImage}
               alt="আমাদের গ্যালারি প্রডাক্ট"
@@ -76,7 +76,7 @@ export default function LandingProductGallery({ title }) {
                   />
                   {/* Subtle Dark Overlay for Non-Active Images */}
                   {!isActive && (
-                    <div className="absolute inset-0 bg-black/10 transition-opacity hover:bg-transparent" />
+                    <div className="absolute inset-0  transition-opacity hover:bg-transparent" />
                   )}
                 </button>
               );
